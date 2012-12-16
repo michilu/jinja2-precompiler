@@ -31,7 +31,7 @@ def get_module_filename(filename, py_compile=False):
 def make_filter_func(target, env, extensions=None, all_files=False):
 
   def filter_func(tpl):
-    if extensions is not None and tpl.rsplit(".", 1)[1] not in extensions:
+    if extensions is not None and os.path.splitext(tpl)[1][1:] not in extensions:
       return False
     if all_files:
       return True
