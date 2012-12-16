@@ -1,7 +1,10 @@
-Jinja2 pre-compiler
-===================
+Jinja2 pre-compiler |Build Status|_
+===================================
 
 Pre-compile Jinja2 templates to Python byte code.
+
+.. |Build Status| image:: https://travis-ci.org/MiCHiLU/jinja2-precompiler.png?branch=master
+.. _`Build Status`: http://travis-ci.org/MiCHiLU/jinja2-precompiler
 
 
 Usage
