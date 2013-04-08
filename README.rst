@@ -64,7 +64,7 @@ An example ``Makefile`` file::
   	jinja2precompiler -c templates
   	zip -FS -j templates_compiled.zip templates/*.pyc
 
-Will compiling only updated files and storing in the zip file.
+Will compiling only updated files and storing into the zip file.
 
 
 Installation
