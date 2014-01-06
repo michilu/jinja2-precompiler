@@ -95,6 +95,8 @@ def main():
     sys.exit(1)
   logging.info("Compiling bundled templates...")
   arg = args[0]
+  if not arg.endswith(os.path.sep):
+    arg = "".join((arg, os.path.sep))
   env = jinja2.Environment(loader=FileSystemLoader([os.path.dirname(arg)]))
   if os.path.isdir(arg):
     if options.extensions is not None:
