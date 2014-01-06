@@ -49,20 +49,36 @@ def make_filter_func(target, env, extensions=None, all_files=False):
 
   return filter_func
 
-class FileSystemLoader(jinja2.FileSystemLoader):
-    def list_templates(self):
-        found = set()
-        for searchpath in self.searchpath:
-            for dirpath, dirnames, filenames in os.walk(searchpath, followlinks=True):
-                for filename in filenames:
-                    template = os.path.join(dirpath, filename) \
-                        [len(searchpath):].strip(os.path.sep) \
-                                          .replace(os.path.sep, '/')
-                    if template[:2] == './':
-                        template = template[2:]
-                    if template not in found:
-                        found.add(template)
-        return sorted(found)
+if jinja2.__version__[:3] >= "2.8":
+    """
+    jinja2 2.8 supports walking symlink directories.
+    see: https://github.com/mitsuhiko/jinja2/issues/71
+    """
+
+    from jinja2 import FileSystemLoader
+
+else:
+
+    class FileSystemLoader(jinja2.FileSystemLoader):
+
+        def __init__(self, searchpath, encoding='utf-8', followlinks=False):
+            super(FileSystemLoader, self).__init__(searchpath, encoding)
+            self.followlinks = followlinks
+
+        def list_templates(self):
+            found = set()
+            for searchpath in self.searchpath:
+                walk_dir = os.walk(searchpath, followlinks=self.followlinks)
+                for dirpath, dirnames, filenames in walk_dir:
+                    for filename in filenames:
+                        template = os.path.join(dirpath, filename) \
+                            [len(searchpath):].strip(os.path.sep) \
+                                              .replace(os.path.sep, '/')
+                        if template[:2] == './':
+                            template = template[2:]
+                        if template not in found:
+                            found.add(template)
+            return sorted(found)
 
 def main():
 
@@ -97,7 +113,7 @@ def main():
   arg = args[0]
   if not arg.endswith(os.path.sep):
     arg = "".join((arg, os.path.sep))
-  env = jinja2.Environment(loader=FileSystemLoader([os.path.dirname(arg)]))
+  env = jinja2.Environment(loader=FileSystemLoader([os.path.dirname(arg)], followlinks=True))
   if os.path.isdir(arg):
     if options.extensions is not None:
       extensions = options.extensions.split(",")
