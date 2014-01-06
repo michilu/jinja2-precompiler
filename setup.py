@@ -21,7 +21,7 @@ class PyTestWithCov(PyTest):
         raise SystemExit(errno)
 
 setup(name="jinja2-precompiler",
-      version="0.2dev",
+      version="0.2",
       description="Pre-compile Jinja2 templates to Python byte code",
       long_description=open('README.rst').read(),
       author="ENDOH takanao",

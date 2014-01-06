@@ -87,6 +87,12 @@ Dependencies
 1. Jinja2_
 
 
+Changes
+-------
+
+0.2: supports walking symlink directories
+
+
 Licensing
 ---------
 Jinja2 pre-compiler is licensed under the terms of the `BSD 3-Clause`_.
