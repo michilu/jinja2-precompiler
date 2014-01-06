@@ -49,6 +49,21 @@ def make_filter_func(target, env, extensions=None, all_files=False):
 
   return filter_func
 
+class FileSystemLoader(jinja2.FileSystemLoader):
+    def list_templates(self):
+        found = set()
+        for searchpath in self.searchpath:
+            for dirpath, dirnames, filenames in os.walk(searchpath, followlinks=True):
+                for filename in filenames:
+                    template = os.path.join(dirpath, filename) \
+                        [len(searchpath):].strip(os.path.sep) \
+                                          .replace(os.path.sep, '/')
+                    if template[:2] == './':
+                        template = template[2:]
+                    if template not in found:
+                        found.add(template)
+        return sorted(found)
+
 def main():
 
   def logger(msg):
@@ -80,7 +95,7 @@ def main():
     sys.exit(1)
   logging.info("Compiling bundled templates...")
   arg = args[0]
-  env = jinja2.Environment(loader=jinja2.FileSystemLoader([os.path.dirname(arg)]))
+  env = jinja2.Environment(loader=FileSystemLoader([os.path.dirname(arg)]))
   if os.path.isdir(arg):
     if options.extensions is not None:
       extensions = options.extensions.split(",")
