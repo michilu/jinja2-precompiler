@@ -64,6 +64,10 @@ def main():
     logger = None
   logging.debug("parse_options: options %s" % options)
   logging.debug("parse_options: args %s" % args)
+  for i in args:
+    if not os.path.exists(i):
+      logging.warning("No such directory: '%s'" % i)
+      sys.exit(1)
   if options.modulename:
     basedir = re.compile(options.base)
     results = list()
